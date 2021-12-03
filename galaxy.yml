@@ -1,0 +1,19 @@
+namespace: tchecode
+name: vmware
+version: 0.1.0
+readme: README.md
+authors:
+  - Lucas Lehnen <lucaslehnen@outlook.com>
+description: Ansible Collection to install VMWare Tools
+license:
+  - MIT
+license_file: ''
+tags:
+  - vmware
+  - esxi
+dependencies: {}
+repository: https://github.com/lucaslehnen/tchecode.vmware
+documentation: https://github.com/lucaslehnen/tchecode.vmware
+homepage: https://github.com/lucaslehnen/tchecode.vmware
+issues: https://github.com/lucaslehnen/tchecode.vmware/issues
+build_ignore: []

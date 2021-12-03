@@ -1,0 +1,52 @@
+- name: "install packages to fix kernel"
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - linux-headers-{{ ansible_kernel }}
+    - build-essential
+
+- name: "Checking VMWare WS instalation..."
+  stat:
+    path: /usr/bin/vmware
+  register: vmware_check
+
+- name: "Installing VMWare"
+  when: not vmware_check.stat.exists
+  notify: reboot
+  block:
+    - name: "Downloading VMWare"
+      get_url:
+        url: "{{ vmware.workstation.url }}"
+        dest: "/tmp/vmware.bundle"
+        mode: "0770"
+
+    - name: "Installing"
+      command:
+        chdir: "/tmp/"
+        cmd: "sh vmware.bundle --required --eulas-agreed --set-setting vmware-workstation serialNumber {{ vmware.workstation.serial_number }}"
+
+- name: "check Kernel module status"
+  stat:
+    path: /dev/vmmon
+  register: vmmon
+
+- name: "Rebuild kernel modules"
+  when: not vmmon.stat.exists
+  notify: reboot
+  block:
+    - name: "Rebuild kernel modules"
+      import_tasks: make.yml
+      vars:
+        modules:
+          - vmnet
+          - vmmon
+
+    - name: "Updating kernel module status"
+      command:
+        cmd: "depmod -a"
+
+    - name: "Restarting vmware service"
+      service:
+        name: vmware
+        state: restarted

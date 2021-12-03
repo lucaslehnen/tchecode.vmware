@@ -1,0 +1,6 @@
+---
+- name: "Download VMWare ESXi"
+  get_url:
+    url: "ftp://192.168.99.1/isos(sda2)/VMware-VMvisor-Installer-7.0U2-17630552.x86_64.iso"
+    dest: /tmp/VMware-VMvisor-Installer-7.0U2-17630552.x86_64.iso
+    mode: 0440

@@ -1,0 +1,23 @@
+---
+- name: "unarchive"
+  unarchive:
+    src: "/usr/lib/vmware/modules/source/{{ item }}.tar"
+    dest: "/usr/lib/vmware/modules/source/{{ item }}-only"
+    remote_src: true
+  with_items: "{{ modules }}"
+
+- name: "Fix kernel modules"
+  command:
+    chdir: "/usr/lib/vmware/modules/source/{{ item }}-only"
+    cmd: "make"
+  with_items: "{{ modules }}"
+  changed_when: false
+  register: modules_builded
+
+- name: "copy"
+  copy:
+    remote_src: true
+    src: "/usr/lib/vmware/modules/source/{{ item }}.o"
+    dest: "/lib/modules/{{ ansible_kernel }}/kernel/drivers/misc/{{ item }}.ko"
+    mode: "preserve"
+  with_items: "{{ modules }}"

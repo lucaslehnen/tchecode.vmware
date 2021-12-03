@@ -1,0 +1,5 @@
+---
+- name: "Gathering facts"
+  setup:
+    filter: 'ansible_kernel'
+- include: vmware.yml
